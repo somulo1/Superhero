@@ -188,3 +188,12 @@ const generateTable = (loadData) => {
     // Update pagination controls
     updatePaginationControls();
 }
+
+// Search function to filter the data
+const searchSuperheroes = (query) => {
+    query = query.toLowerCase();
+    filteredData = superheroes.filter(hero => hero.name.toLowerCase().includes(query));
+    sortData(currentSortColumn, isAscending);  // Ensure sorting is applied on filtered data
+    currentPage = 1;  // Reset to first page when searching
+    generateTable(filteredData);
+}
