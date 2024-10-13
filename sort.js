@@ -81,3 +81,110 @@ const sortData = (column, ascending) => {
         return 0;
     });
 }
+
+const generateTable = (loadData) => {
+    // Clear any existing table
+    const existingTable = document.querySelector('table');
+    if (existingTable) {
+        existingTable.remove();
+    }
+
+    // create table
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    // create header row
+    const headers = [
+        { label: "Icon", key: "icon" },
+        { label: "Name", key: "name" },
+        { label: "Full Name", key: "fullName" },
+        { label: "PowerStats", key: "powerStats" },
+        { label: "Race", key: "race" },
+        { label: "Gender", key: "gender" },
+        { label: "Height", key: "height" },
+        { label: "Weight", key: "weight" },
+        { label: "Place Of Birth", key: "placeOfBirth" },
+        { label: "Alignment", key: "alignment" }
+    ];
+
+    const headerRow = document.createElement('tr');
+
+    headers.forEach(header => {
+        const th = document.createElement('th');
+        const headerName = header.label;
+
+        th.textContent = headerName;
+        th.style.cursor = "pointer";  // Make the headers clickable for sorting
+        th.addEventListener('click', () => {
+            if (currentSortColumn === header.key) {
+                isAscending = !isAscending;  // Toggle sort order
+            } else {
+                currentSortColumn = header.key;  // Sort by new column
+                isAscending = true;  // Reset to ascending on new column
+            }
+            sortData(currentSortColumn, isAscending);  // Sort data
+            generateTable(filteredData);  // Re-generate table
+        });
+
+        headerRow.append(th);
+    });
+
+    thead.append(headerRow);
+
+    // Calculate start and end indices for current page
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = pageSize === 'All' ? loadData.length : Math.min(startIndex + pageSize, loadData.length);
+
+    // loop through array for current page
+    for (let i = startIndex; i < endIndex; i++) {
+        const item = loadData[i];
+        const row = document.createElement('tr');
+
+        // create cells for icon
+        const img = document.createElement('img');
+        img.src = item.images.xs;
+        img.alt = item.name;
+        row.append(createCell("", img));
+
+        // Name
+        row.append(createCell(item.name));
+
+        // Full Name
+        row.append(createCell(item.biography.fullName));
+
+        // Powerstats 
+        const powerstats = Object.entries(item.powerstats)
+            .map(([key, value]) => `${key}:${value} `);
+
+        row.append(createCell(powerstats));
+
+        // Race
+        row.append(createCell(item.appearance.race));
+
+        // Gender
+        row.append(createCell(item.appearance.gender));
+
+        // Height
+        row.append(createCell(item.appearance.height[1]));
+
+        // Weight
+        row.append(createCell(item.appearance.weight[1]));
+
+        // Place of Birth
+        row.append(createCell(item.biography.placeOfBirth));
+
+        // Alignment
+        row.append(createCell(item.biography.alignment));
+
+        tbody.append(row);
+    }
+
+    table.append(thead);
+    table.append(tbody);
+
+    body.append(table);
+
+    // Update pagination controls
+    updatePaginationControls();
+}
