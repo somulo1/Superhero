@@ -197,3 +197,18 @@ const searchSuperheroes = (query) => {
     currentPage = 1;  // Reset to first page when searching
     generateTable(filteredData);
 }
+
+// Create search input field
+const createSearchInput = () => {
+    const searchDiv = document.createElement('div');
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.placeholder = 'Search for a superhero...';
+
+    searchInput.addEventListener('input', (event) => {
+        searchSuperheroes(event.target.value);
+    });
+
+    searchDiv.append(searchInput);
+    body.insertBefore(searchDiv, body.firstChild);
+}
