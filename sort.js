@@ -11,3 +11,17 @@ let superheroes = [];  // To store all data
 let filteredData = []; // To store filtered data based on search
 let currentSortColumn = 'name'; // Initial sort by Name
 let isAscending = true;  // Initial sort order is ascending
+
+export function sort() {
+    generateTable(filteredData);  // Initially generate table with full data
+ }
+ 
+ const createCell = (text, element) => {
+     const td = document.createElement('td');
+     if (element) {
+         td.append(element);
+     } else {
+         td.textContent = text;
+     }
+     return td;
+ }
