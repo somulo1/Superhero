@@ -273,3 +273,15 @@ const updatePaginationControls = () => {
     // Update page info
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
 }
+
+// Fetch superhero data and initialize table and search
+fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+        superheroes = data;
+        filteredData = superheroes;
+        createSearchInput();  // Create the search input
+        createPaginationControls();  // Create pagination controls
+        sortData('name', true);  // Initial sort by name in ascending order
+        generateTable(filteredData);  // Generate the initial table
+    });
