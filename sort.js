@@ -260,3 +260,16 @@ const createPaginationControls = () => {
     paginationDiv.append(prevButton, pageInfo, nextButton, pageSizeSelect);
     body.insertBefore(paginationDiv, body.firstChild);
 }
+// Update pagination controls
+const updatePaginationControls = () => {
+    const paginationDiv = document.getElementById('pagination-controls');
+    const [prevButton, pageInfo, nextButton, pageSizeSelect] = paginationDiv.children;
+
+    const totalPages = Math.ceil(filteredData.length / pageSize);
+
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === totalPages || pageSize === 'All';
+
+    // Update page info
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+}
