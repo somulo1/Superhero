@@ -212,3 +212,51 @@ const createSearchInput = () => {
     searchDiv.append(searchInput);
     body.insertBefore(searchDiv, body.firstChild);
 }
+
+// Create pagination controls
+const createPaginationControls = () => {
+    const paginationDiv = document.createElement('div');
+    paginationDiv.id = 'pagination-controls';
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Previous';
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            generateTable(filteredData);
+        }
+    });
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.addEventListener('click', () => {
+        if (currentPage < Math.ceil(filteredData.length / pageSize)) {
+            currentPage++;
+            generateTable(filteredData);
+        }
+    });
+
+    // Page info span
+    const pageInfo = document.createElement('span');
+    pageInfo.className = 'page-info';
+
+    // Page size select
+    const pageSizeSelect = document.createElement('select');
+    pageSizeOptions.forEach(size => {
+        const option = document.createElement('option');
+        option.value = size;
+        option.textContent = size === 'All' ? 'All' : `${size} per page`;
+        pageSizeSelect.appendChild(option);
+    });
+    pageSizeSelect.value = pageSize;
+    pageSizeSelect.addEventListener('change', (event) => {
+        pageSize = event.target.value === 'All' ? filteredData.length : parseInt(event.target.value);
+        currentPage = 1;  // Reset to first page when changing page size
+        generateTable(filteredData);
+    });
+
+    paginationDiv.append(prevButton, pageInfo, nextButton, pageSizeSelect);
+    body.insertBefore(paginationDiv, body.firstChild);
+}
