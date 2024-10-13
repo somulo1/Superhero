@@ -22,47 +22,6 @@ You are a villain and your dream is to get rid of those annoying, yoga-pant-wear
 
 Your task is to build a web page to organize all the data about those smartypants. All that data can be found in `all.json`.
 
-## Instructions
-
-You must write all of the code from scratch. You are not allowed to rely on any frameworks or libraries like React, Vue, Svelte, etc.
-
-### Fetching the Data
-
-In order to get the information, you should use `fetch`. When you use `fetch` in JavaScript, it always returns a Promise. Here's an example:
-
-```javascript
-// This function is called only after the data has been fetched and parsed.
-const loadData = heroes => {
-  console.log(heroes);
-}
-
-// Request the file with fetch; the data will be downloaded to your browser cache.
-fetch('https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json')
-  .then((response) => response.json()) // parse the response from JSON
-  .then(loadData); // Call loadData with the parsed data
-# Superhero Data Organizer
-
-Welcome to the Superhero Data Organizer project! In this web application, you, the villain, can organize and manage data about superheroes in a sleek and user-friendly manner. This project is built entirely from scratch without any frameworks or libraries.
-
-## Table of Contents
-
-- [Project Overview](#project-overview)
-- [Instructions](#instructions)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Fetching Data](#fetching-data)
-- [Display](#display)
-- [Search Functionality](#search-functionality)
-- [Sorting](#sorting)
-- [Bonus Features](#bonus-features)
-- [Collaboration](#collaboration)
-- [Authors](#authors)
-- [License](#license)
-- [Repository](#repository)
-
-## Project Overview
-
-This project aims to provide a platform where users can view and organize superhero data. As the self-proclaimed villain, you are tasked with creating a professional-looking webpage that collects and displays relevant superhero information from an external JSON API.
 
 ## Instructions
 
