@@ -1,14 +1,65 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <!-- update metadata -->
-        <title>Get them all</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" type="text/css" href="./sort.css">
-    </head>
-    <body>
-        <script type="module">
-            import {sort} from './sort.js'
-        </script>
-    </body>
+<html lang="en">
+<head>
+    <!-- Update metadata -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Them All - Superhero Organizer</title>
+    <link rel="stylesheet" type="text/css" href="./sort.css">
+</head>
+<body>
+    <header>
+        <h1>Superhero Data Organizer</h1>
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Search for a superhero..." />
+            <button id="search-button">
+                <img src="search-icon.png" alt="Search" />
+            </button>
+        </div>
+    </header>
+    
+    <main>
+        <div id="pagination-controls">
+            <label for="page-size">Show:</label>
+            <select id="page-size">
+                <option value="10">10</option>
+                <option value="20" selected>20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="All">All</option>
+            </select>
+            <button id="prev-button">Previous</button>
+            <span id="page-info">Page 1 of X</span>
+            <button id="next-button">Next</button>
+        </div>
+        
+        <table id="superhero-table">
+            <thead>
+                <tr>
+                    <th>Icon</th>
+                    <th>Name</th>
+                    <th>Full Name</th>
+                    <th>Power Stats</th>
+                    <th>Race</th>
+                    <th>Gender</th>
+                    <th>Height</th>
+                    <th>Weight</th>
+                    <th>Place of Birth</th>
+                    <th>Alignment</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Superhero data will be populated here -->
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Superhero Data Organizer. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { sort } from './sort.js';
+    </script>
+</body>
 </html>
