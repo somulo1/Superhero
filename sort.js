@@ -14,17 +14,17 @@ let isAscending = true;  // Initial sort order is ascending
 
 export function sort() {
     generateTable(filteredData);  // Initially generate table with full data
- }
+}
  
- const createCell = (text, element) => {
-     const td = document.createElement('td');
-     if (element) {
-         td.append(element);
-     } else {
-         td.textContent = text;
-     }
-     return td;
- }
+const createCell = (text, element) => {
+    const td = document.createElement('td');
+    if (element) {
+        td.append(element);
+    } else {
+        td.textContent = text;
+    }
+    return td;
+}
 
 // Sorting function to handle different data types
 const sortData = (column, ascending) => {
@@ -52,13 +52,13 @@ const sortData = (column, ascending) => {
                 aValue = a.appearance.gender || '';
                 bValue = b.appearance.gender || '';
                 break;
-             case 'height':
-                aValue = parseFloat(a.appearance.height[0]) || 0;  // Assumes height is in the format [ft, cm]
-                bValue = parseFloat(b.appearance.height[0]) || 0;
+            case 'height':
+                aValue = parseFloat(a.appearance.height[1]) || 0;  // Assumes height is in the format [ft, cm]
+                bValue = parseFloat(b.appearance.height[1]) || 0;
                 break;
             case 'weight':
-                aValue = parseFloat(a.appearance.weight[0]) || 0;  // Assumes weight is in the format [lb, kg]
-                bValue = parseFloat(b.appearance.weight[0]) || 0;
+                aValue = parseFloat(a.appearance.weight[1]) || 0;  // Assumes weight is in the format [lb, kg]
+                bValue = parseFloat(b.appearance.weight[1]) || 0;
                 break;
             case 'placeOfBirth':
                 aValue = a.biography.placeOfBirth || '';
@@ -76,72 +76,27 @@ const sortData = (column, ascending) => {
         if (!aValue) return 1;
         if (!bValue) return -1;
 
-        if (aValue < bValue) return ascending ? -1 : 1;
-        if (aValue > bValue) return ascending ? 1 : -1;
-        return 0;
+        return ascending ? (aValue < bValue ? -1 : 1) : (aValue > bValue ? -1 : 1);
     });
 }
 
-const generateTable = (loadData) => {
+const generateTable = () => {
     // Clear any existing table
-    const existingTable = document.querySelector('table');
+    const existingTable = document.querySelector('#superhero-table tbody');
     if (existingTable) {
-        existingTable.remove();
+        existingTable.innerHTML = ''; // Clear existing rows
     }
-
-    // create table
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-
-    // create header row
-    const headers = [
-        { label: "Icon", key: "icon" },
-        { label: "Name", key: "name" },
-        { label: "Full Name", key: "fullName" },
-        { label: "PowerStats", key: "powerStats" },
-        { label: "Race", key: "race" },
-        { label: "Gender", key: "gender" },
-        { label: "Height", key: "height" },
-        { label: "Weight", key: "weight" },
-        { label: "Place Of Birth", key: "placeOfBirth" },
-        { label: "Alignment", key: "alignment" }
-    ];
-
-    const headerRow = document.createElement('tr');
-
-    headers.forEach(header => {
-        const th = document.createElement('th');
-        const headerName = header.label;
-
-        th.textContent = headerName;
-        th.style.cursor = "pointer";  // Make the headers clickable for sorting
-        th.addEventListener('click', () => {
-            if (currentSortColumn === header.key) {
-                isAscending = !isAscending;  // Toggle sort order
-            } else {
-                currentSortColumn = header.key;  // Sort by new column
-                isAscending = true;  // Reset to ascending on new column
-            }
-            sortData(currentSortColumn, isAscending);  // Sort data
-            generateTable(filteredData);  // Re-generate table
-        });
-
-        headerRow.append(th);
-    });
-
-    thead.append(headerRow);
 
     // Calculate start and end indices for current page
     const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = pageSize === 'All' ? loadData.length : Math.min(startIndex + pageSize, loadData.length);
+    const endIndex = pageSize === 'All' ? filteredData.length : Math.min(startIndex + pageSize, filteredData.length);
 
-    // loop through array for current page
+    // Loop through array for current page
     for (let i = startIndex; i < endIndex; i++) {
-        const item = loadData[i];
+        const item = filteredData[i];
         const row = document.createElement('tr');
 
-        // create cells for icon
+        // Create cells for icon
         const img = document.createElement('img');
         img.src = item.images.xs;
         img.alt = item.name;
@@ -155,8 +110,7 @@ const generateTable = (loadData) => {
 
         // Powerstats 
         const powerstats = Object.entries(item.powerstats)
-            .map(([key, value]) => `${key}:${value} `);
-
+            .map(([key, value]) => `${key}: ${value}`).join(', ');
         row.append(createCell(powerstats));
 
         // Race
@@ -177,13 +131,8 @@ const generateTable = (loadData) => {
         // Alignment
         row.append(createCell(item.biography.alignment));
 
-        tbody.append(row);
+        existingTable.append(row);
     }
-
-    table.append(thead);
-    table.append(tbody);
-
-    body.append(table);
 
     // Update pagination controls
     updatePaginationControls();
@@ -195,75 +144,52 @@ const searchSuperheroes = (query) => {
     filteredData = superheroes.filter(hero => hero.name.toLowerCase().includes(query));
     sortData(currentSortColumn, isAscending);  // Ensure sorting is applied on filtered data
     currentPage = 1;  // Reset to first page when searching
-    generateTable(filteredData);
+    generateTable();
 }
 
 // Create search input field
 const createSearchInput = () => {
-    const searchDiv = document.createElement('div');
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.placeholder = 'Search for a superhero...';
-
+    const searchInput = document.getElementById('search-input');
     searchInput.addEventListener('input', (event) => {
         searchSuperheroes(event.target.value);
     });
-
-    searchDiv.append(searchInput);
-    body.insertBefore(searchDiv, body.firstChild);
 }
 
 // Create pagination controls
 const createPaginationControls = () => {
-    const paginationDiv = document.createElement('div');
-    paginationDiv.id = 'pagination-controls';
+    const paginationDiv = document.getElementById('pagination-controls');
 
     // Previous button
-    const prevButton = document.createElement('button');
-    prevButton.textContent = 'Previous';
+    const prevButton = paginationDiv.querySelector('#prev-button');
     prevButton.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
-            generateTable(filteredData);
+            generateTable();
         }
     });
 
     // Next button
-    const nextButton = document.createElement('button');
-    nextButton.textContent = 'Next';
+    const nextButton = paginationDiv.querySelector('#next-button');
     nextButton.addEventListener('click', () => {
         if (currentPage < Math.ceil(filteredData.length / pageSize)) {
             currentPage++;
-            generateTable(filteredData);
+            generateTable();
         }
     });
 
-    // Page info span
-    const pageInfo = document.createElement('span');
-    pageInfo.className = 'page-info';
-
     // Page size select
-    const pageSizeSelect = document.createElement('select');
-    pageSizeOptions.forEach(size => {
-        const option = document.createElement('option');
-        option.value = size;
-        option.textContent = size === 'All' ? 'All' : `${size} per page`;
-        pageSizeSelect.appendChild(option);
-    });
-    pageSizeSelect.value = pageSize;
+    const pageSizeSelect = paginationDiv.querySelector('#page-size');
     pageSizeSelect.addEventListener('change', (event) => {
         pageSize = event.target.value === 'All' ? filteredData.length : parseInt(event.target.value);
         currentPage = 1;  // Reset to first page when changing page size
-        generateTable(filteredData);
+        generateTable();
     });
-
-    paginationDiv.append(prevButton, pageInfo, nextButton, pageSizeSelect);
-    body.insertBefore(paginationDiv, body.firstChild);
 }
+
 // Update pagination controls
 const updatePaginationControls = () => {
     const paginationDiv = document.getElementById('pagination-controls');
-    const [prevButton, pageInfo, nextButton, pageSizeSelect] = paginationDiv.children;
+    const [prevButton, pageInfo, nextButton] = paginationDiv.children;
 
     const totalPages = Math.ceil(filteredData.length / pageSize);
 
@@ -271,7 +197,8 @@ const updatePaginationControls = () => {
     nextButton.disabled = currentPage === totalPages || pageSize === 'All';
 
     // Update page info
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    const pageInfoSpan = paginationDiv.querySelector('#page-info');
+    pageInfoSpan.textContent = `Page ${currentPage} of ${totalPages}`;
 }
 
 // Fetch superhero data and initialize table and search
@@ -283,5 +210,5 @@ fetch(url)
         createSearchInput();  // Create the search input
         createPaginationControls();  // Create pagination controls
         sortData('name', true);  // Initial sort by name in ascending order
-        generateTable(filteredData);  // Generate the initial table
-    });
+        generateTable();  // Generate the initial table
+    }); 
